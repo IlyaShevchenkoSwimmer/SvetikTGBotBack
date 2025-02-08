@@ -17,6 +17,13 @@ app.use(express_1.default.static(__dirname + "/dist"));
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/dist/index.html");
 });
+app.get("/checkresults", (req, res) => {
+    const data = fs_1.default.readFileSync("./results.json", {
+        encoding: "utf-8",
+        flag: "r",
+    });
+    res.send(data);
+});
 app.post("/addresult", jsonParser, (req, res) => {
     const newData = JSON.stringify(req.body);
     fs_1.default.writeFileSync("./results.json", newData, {

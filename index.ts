@@ -16,17 +16,37 @@ const jsonParser = bodyParser.json();
 app.use(express.static(__dirname + "/dist"));
 
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/dist/index.html");
+  try {
+    res.sendFile(__dirname + "/dist/index.html");
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.get("/checkresults", (req, res) => {
+  try {
+    const data = fs.readFileSync("./results.json", {
+      encoding: "utf-8",
+      flag: "r",
+    });
+    res.send(data);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 app.post("/addresult", jsonParser, (req, res) => {
-  const newData = JSON.stringify(req.body);
-  fs.writeFileSync("./results.json", newData, {
-    encoding: "utf8",
-    flag: "a+",
-    mode: 0o666,
-  });
-  res.send(JSON.stringify({ result: "success" }));
+  try {
+    const newData = JSON.stringify(req.body);
+    fs.writeFileSync("./results.json", newData, {
+      encoding: "utf8",
+      flag: "a+",
+      mode: 0o666,
+    });
+    res.send(JSON.stringify({ result: "success" }));
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 app.listen(port, () => {
